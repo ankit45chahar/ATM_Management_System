@@ -1,0 +1,170 @@
+#include <stdio.h>
+
+#define PIN 1234
+#define MAX 100
+
+struct Transaction
+{
+    int id;
+    char type[20];
+    float amount;
+};
+
+int main()
+{
+    struct Transaction t[MAX];
+    int enteredPin, choice;
+    int count = 0, i, searchId, found;
+    float balance = 10000, amount;
+
+    printf("================================\n");
+    printf("       ATM SIMULATION SYSTEM\n");
+    printf("================================\n");
+
+    /* PIN Verification */
+    printf("Enter your PIN: ");
+    scanf("%d", &enteredPin);
+
+    if (enteredPin != PIN)
+    {
+        printf("Incorrect PIN! Access Denied.\n");
+        return 0;
+    }
+    else
+    {
+    printf("Login Successful!\n");
+    }
+    do
+    {
+        printf("\n========== ATM MENU ==========\n");
+        printf("1. Check Balance\n");
+        printf("2. Deposit Money\n");
+        printf("3. Withdraw Money\n");
+        printf("4. Transaction History\n");
+        printf("5. Search Transaction\n");
+        printf("6. Exit\n");
+        printf("==============================\n");
+
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice)
+        {
+            case 1:
+                printf("Your Balance: Rs. %.2f\n", balance);
+                break;
+
+            case 2:
+                printf("Enter deposit amount: Rs. ");
+                scanf("%f", &amount);
+
+                if (amount > 0)
+                {
+                    balance = balance + amount;
+
+                    if (count < MAX)
+                    {
+                        t[count].id = count + 1;
+                        sprintf(t[count].type, "Deposit");
+                        t[count].amount = amount;
+                        count++;
+                    }
+
+                    printf("Money Deposited Successfully!\n");
+                    printf("New Balance: Rs. %.2f\n", balance);
+                }
+                else
+                {
+                    printf("Invalid Amount!\n");
+                }
+                break;
+
+            case 3:
+                printf("Enter withdrawal amount: Rs. ");
+                scanf("%f", &amount);
+
+                if (amount <= 0)
+                {
+                    printf("Invalid Amount!\n");
+                }
+                else if (amount > balance)
+                {
+                    printf("Insufficient Balance!\n");
+                }
+                else
+                {
+                    balance = balance - amount;
+
+                    if (count < MAX)
+                    {
+                        t[count].id = count + 1;
+                        sprintf(t[count].type, "Withdrawal");
+                        t[count].amount = amount;
+                        count++;
+                    }
+
+                    printf("Please Collect Your Cash.\n");
+                    printf("Remaining Balance: Rs. %.2f\n", balance);
+                }
+                break;
+
+            case 4:
+                if (count == 0)
+                {
+                    printf("No Transactions Found.\n");
+                }
+                else
+                {
+                    printf("\n===== TRANSACTION HISTORY =====\n");
+
+                    /* Display latest transaction first */
+                    for (i = count - 1; i >= 0; i--)
+                    {
+                        printf("Transaction ID: %d\n", t[i].id);
+                        printf("Type: %s\n", t[i].type);
+                        printf("Amount: Rs. %.2f\n", t[i].amount);
+                        printf("-------------------------------\n");
+                    }
+                }
+                break;
+
+            case 5:
+                printf("Enter Transaction ID: ");
+                scanf("%d", &searchId);
+
+                found = 0;
+
+                /* Linear Search */
+                for (i = 0; i < count; i++)
+                {
+                    if (t[i].id == searchId)
+                    {
+                        printf("\nTransaction Found!\n");
+                        printf("ID: %d\n", t[i].id);
+                        printf("Type: %s\n", t[i].type);
+                        printf("Amount: Rs. %.2f\n", t[i].amount);
+
+                        found = 1;
+                        break;
+                    }
+                }
+
+                if (found == 0)
+                {
+                    printf("Transaction Not Found!\n");
+                }
+                break;
+
+            case 6:
+                printf("Thank You for Using Our ATM!\n");
+                printf("Exiting Program...\n");
+                break;
+
+            default:
+                printf("Invalid Choice! Please Try Again.\n");
+        }
+
+    } while (choice != 6);
+
+    return 0;
+}
